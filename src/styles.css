@@ -72,6 +72,14 @@ body {
 .line { border-color: var(--line); }
 .scroll { overflow-x: auto; }
 
+.app-footer {
+  border-top: 1px solid var(--line);
+  color: var(--mute);
+  font-size: .8rem;
+  padding: 1rem;
+  text-align: center;
+}
+
 .hero {
   border-radius: 18px;
   color: #fff;
@@ -93,6 +101,7 @@ body {
   background: var(--ink);
   color: var(--bg);
   border-radius: 10px;
+  min-height: 44px;
   padding: .6rem 1.1rem;
   font-weight: 600;
   font-size: .9rem;
@@ -103,6 +112,7 @@ body {
 .btn2 {
   border: 1px solid var(--line);
   border-radius: 10px;
+  min-height: 44px;
   padding: .5rem .8rem;
   font-weight: 500;
   font-size: .875rem;
@@ -114,12 +124,14 @@ body {
 
 .inp {
   width: 100%;
+  min-width: 0;
+  min-height: 44px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: .6rem .75rem;
   color: var(--ink);
-  font-size: .95rem;
+  font-size: 16px;
 }
 
 .inp:focus {
@@ -136,6 +148,7 @@ button:focus-visible {
 .seg {
   display: inline-flex;
   flex-wrap: wrap;
+  max-width: 100%;
   gap: 2px;
   padding: 3px;
   background: var(--soft);
@@ -143,6 +156,8 @@ button:focus-visible {
 }
 
 .seg button {
+  min-width: 0;
+  min-height: 44px;
   padding: .4rem .85rem;
   border-radius: 8px;
   font-size: .875rem;
@@ -159,10 +174,11 @@ button:focus-visible {
 .nav {
   display: flex;
   align-items: center;
-  gap: .6rem;
-  padding: .55rem .75rem;
+  gap: .5rem;
+  min-height: 44px;
+  padding: .55rem .6rem;
   border-radius: 9px;
-  font-size: .9rem;
+  font-size: .85rem;
   font-weight: 500;
   color: var(--mute);
 }

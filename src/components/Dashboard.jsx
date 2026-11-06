@@ -24,7 +24,7 @@ export default function Dashboard({
 
   return (
     <div className="space-y-4 fade">
-      <section className="hero p-5 sm:p-7 flex items-center justify-between gap-4">
+      <section className="hero p-4 sm:p-7 flex flex-col items-start sm:flex-row sm:items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="text-sm opacity-80">Hi {plan.name}</p>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -36,7 +36,7 @@ export default function Dashboard({
         </div>
         <Ring value={completedPercent} size={110} color="#fff" track="rgba(255,255,255,.25)" textColor="#fff" />
       </section>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
           ['Target band', plan.target.toFixed(1), 'target'],
           ['Days left', daysLeft, 'clock'],
@@ -52,7 +52,7 @@ export default function Dashboard({
         ))}
       </div>
       <section className="card p-4 sm:p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2">
             <button
               className="btn2"
@@ -74,11 +74,11 @@ export default function Dashboard({
               <button className="btn2 text-sm" onClick={() => onSelectDay(null)}>Today</button>
             )}
           </div>
-          <div className="seg" role="group" aria-label="Filter tasks">
+          <div className="seg w-full sm:w-auto" role="group" aria-label="Filter tasks">
             {filters.map((option) => (
               <button
                 key={option}
-                className={filter === option ? 'on' : ''}
+                className={`${filter === option ? 'on' : ''} flex-1 sm:flex-initial`}
                 aria-pressed={filter === option}
                 onClick={() => onFilterChange(option)}
               >

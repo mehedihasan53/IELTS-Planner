@@ -27,12 +27,12 @@ export default function DailyRoutine({ schedule, editingKey, onToggleEditor, onS
           return (
             <li key={block.key || block.a + block.name}>
               <div className="flex gap-3 items-stretch">
-                <div className="w-24 shrink-0 text-sm font-medium pt-2.5">
+                <div className="w-20 sm:w-24 shrink-0 text-sm font-medium pt-2.5">
                   {formatTime(block.a)}
                   <span className="mute block font-normal text-xs">{block.b - block.a} min</span>
                 </div>
                 <div
-                  className="flex-1 rounded-lg px-3 py-2.5 flex items-center gap-2 text-sm font-medium"
+                  className="flex-1 min-w-0 rounded-lg px-3 py-2.5 flex items-center gap-2 text-sm font-medium"
                   style={{
                     borderLeft: `4px solid ${colors[block.type]}`,
                     background: block.type === 'free' ? 'transparent' : 'var(--soft)',
@@ -41,8 +41,8 @@ export default function DailyRoutine({ schedule, editingKey, onToggleEditor, onS
                   }}
                 >
                   {isStudy && <Icon name={block.type} size={15} color={colors[block.type]} />}
-                  {block.name}
-                  {block.edited && <span className="mute text-xs">edited</span>}
+                  <span className="min-w-0 break-words">{block.name}</span>
+                  {block.edited && <span className="mute text-xs shrink-0">edited</span>}
                   {isStudy && (
                     <button
                       className="btn2 ml-auto"
@@ -56,8 +56,8 @@ export default function DailyRoutine({ schedule, editingKey, onToggleEditor, onS
                 </div>
               </div>
               {isStudy && editingKey === block.key && (
-                <div className="ml-24 pl-3 mt-1.5 flex flex-wrap items-end gap-3 fade">
-                  <Field title="Start">
+                <div className="ml-0 sm:ml-24 pl-0 sm:pl-3 mt-1.5 grid grid-cols-2 sm:flex items-end gap-3 fade">
+                  <Field title="Start" className="min-w-0">
                     <input
                       className="inp"
                       type="time"
@@ -67,10 +67,9 @@ export default function DailyRoutine({ schedule, editingKey, onToggleEditor, onS
                       )}
                     />
                   </Field>
-                  <Field title="Minutes">
+                  <Field title="Minutes" className="min-w-0">
                     <input
                       className="inp"
-                      style={{ width: 90 }}
                       type="number"
                       min="10"
                       max="180"

@@ -4,6 +4,7 @@ import DailyRoutine from './components/DailyRoutine.jsx';
 import Roadmap from './components/Roadmap.jsx';
 import Settings from './components/Settings.jsx';
 import Sidebar from './components/Sidebar.jsx';
+import StudyHub from './components/StudyHub.jsx';
 import Wizard from './components/Wizard.jsx';
 import { defaultPlan } from './data/plannerData.js';
 import {
@@ -20,6 +21,7 @@ import {
 export default function App() {
   const [state, setState] = useState(loadProgress);
   const [activeTab, setActiveTab] = useState('dash');
+  const [selectedStudyModule, setSelectedStudyModule] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [taskFilter, setTaskFilter] = useState('All');
   const [editingKey, setEditingKey] = useState(null);
@@ -48,20 +50,25 @@ export default function App() {
 
   if (!state) {
     return (
-      <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center">
-        <div className="text-center mb-6 max-w-md">
-          <h1 className="text-3xl font-extrabold tracking-tight">IELTS Study Companion</h1>
-          <p className="mute mt-1">Three quick steps to a timetable that fits your real day.</p>
+      <div className="min-h-[100dvh] flex flex-col">
+        <div className="flex-1 p-4 sm:p-8 flex flex-col items-center justify-center">
+          <div className="text-center mb-6 max-w-md">
+            <h1 className="text-3xl font-extrabold tracking-tight">IELTS Study Companion</h1>
+            <p className="mute mt-1">Three quick steps to a timetable that fits your real day.</p>
+          </div>
+          <Wizard
+            initial={defaultPlan}
+            onComplete={(plan) => setState({
+              p: plan,
+              start: formatDate(new Date()),
+              done: {},
+              ov: {},
+            })}
+          />
         </div>
-        <Wizard
-          initial={defaultPlan}
-          onComplete={(plan) => setState({
-            p: plan,
-            start: formatDate(new Date()),
-            done: {},
-            ov: {},
-          })}
-        />
+        <footer className="app-footer">
+          © 2026 Designed &amp; Developed by Mehedi Hasan Emon
+        </footer>
       </div>
     );
   }
@@ -119,58 +126,69 @@ export default function App() {
   };
 
   return (
-    <div className="md:flex min-h-screen">
-      <Sidebar
-        activeTab={activeTab}
-        onSelectTab={setActiveTab}
-        progress={overallProgress}
-        dark={isDark()}
-        onToggleTheme={toggleTheme}
-      />
-      <main className="flex-1 min-w-0 p-3 sm:p-6 lg:p-8 max-w-4xl pb-20">
-        {activeTab === 'dash' && (
-          <Dashboard
-            plan={{ ...plan, studyTotal: schedule.studyTotal }}
-            day={day}
-            currentDay={currentDay}
-            daysLeft={daysLeft}
-            completedPercent={dailyProgress}
-            completedToday={completedOnDay(day)}
-            tasks={tasks}
-            filter={taskFilter}
-            onFilterChange={setTaskFilter}
-            onToggleTask={toggleTask}
-            onSelectDay={setSelectedDay}
-          />
-        )}
-        {activeTab === 'routine' && (
-          <DailyRoutine
-            schedule={schedule}
-            editingKey={editingKey}
-            onToggleEditor={setEditingKey}
-            onSetOverride={setOverride}
-            onClearOverride={clearOverride}
-          />
-        )}
-        {activeTab === 'road' && (
-          <Roadmap
-            plan={plan}
-            currentDay={currentDay}
-            completedCount={completedOnDay}
-            onOpenDay={(selected) => {
-              setSelectedDay(selected);
-              setActiveTab('dash');
-            }}
-          />
-        )}
-        {activeTab === 'set' && (
-          <Settings
-            plan={plan}
-            onSave={saveSettings}
-            onReset={reset}
-          />
-        )}
-      </main>
+    <div className="min-h-[100dvh] flex flex-col">
+      <div className="lg:flex flex-1">
+        <Sidebar
+          activeTab={activeTab}
+          onSelectTab={setActiveTab}
+          progress={overallProgress}
+          dark={isDark()}
+          onToggleTheme={toggleTheme}
+        />
+        <main className="flex-1 min-w-0 w-full p-3 sm:p-6 lg:p-8 max-w-4xl">
+          {activeTab === 'dash' && (
+            <Dashboard
+              plan={{ ...plan, studyTotal: schedule.studyTotal }}
+              day={day}
+              currentDay={currentDay}
+              daysLeft={daysLeft}
+              completedPercent={dailyProgress}
+              completedToday={completedOnDay(day)}
+              tasks={tasks}
+              filter={taskFilter}
+              onFilterChange={setTaskFilter}
+              onToggleTask={toggleTask}
+              onSelectDay={setSelectedDay}
+            />
+          )}
+          {activeTab === 'routine' && (
+            <DailyRoutine
+              schedule={schedule}
+              editingKey={editingKey}
+              onToggleEditor={setEditingKey}
+              onSetOverride={setOverride}
+              onClearOverride={clearOverride}
+            />
+          )}
+          {activeTab === 'road' && (
+            <Roadmap
+              plan={plan}
+              currentDay={currentDay}
+              completedCount={completedOnDay}
+              onOpenDay={(selected) => {
+                setSelectedDay(selected);
+                setActiveTab('dash');
+              }}
+            />
+          )}
+          {activeTab === 'set' && (
+            <Settings
+              plan={plan}
+              onSave={saveSettings}
+              onReset={reset}
+            />
+          )}
+          {activeTab === 'hub' && (
+            <StudyHub
+              selectedModule={selectedStudyModule}
+              onSelectModule={setSelectedStudyModule}
+            />
+          )}
+        </main>
+      </div>
+      <footer className="app-footer">
+        © 2026 Designed &amp; Developed by Mehedi Hasan Emon
+      </footer>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import Icon from './Icon.jsx';
 
-export function Field({ title, children }) {
+export function Field({ title, children, className = '' }) {
   return (
-    <label className="block">
+    <label className={`block min-w-0 ${className}`}>
       <span className="block text-[13px] font-medium mb-1.5 mute">{title}</span>
       {children}
     </label>

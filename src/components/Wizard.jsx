@@ -59,7 +59,7 @@ function GoalsStep({ form, update }) {
           format={(value) => value.toFixed(1)}
         />
       </Field>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field title="Days remaining">
           <input
             className="inp"
@@ -113,22 +113,22 @@ function RoutineStep({ form, update, updateActivity, addPreset }) {
           <p className="text-sm mute">Nothing fixed yet. Add an activity above, or continue with a free day.</p>
         )}
         {form.fixed.map((activity, index) => (
-          <div key={index} className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_8rem_6rem_auto] gap-2 items-center">
+          <div key={index} className="grid grid-cols-2 sm:grid-cols-[minmax(0,1fr)_8rem_6rem_auto] gap-2 items-center">
             <input
-              className="inp"
+              className="inp col-span-2 sm:col-span-1 min-w-0"
               aria-label="Activity name"
               value={activity.name}
               onChange={(event) => updateActivity(index, 'name', event.target.value)}
             />
             <input
-              className="inp"
+              className="inp min-w-0"
               aria-label="Start time"
               type="time"
               value={activity.start}
               onChange={(event) => updateActivity(index, 'start', event.target.value)}
             />
             <input
-              className="inp"
+              className="inp min-w-0"
               aria-label="Duration in minutes"
               type="number"
               min="5"
@@ -138,7 +138,7 @@ function RoutineStep({ form, update, updateActivity, addPreset }) {
             />
             <button
               type="button"
-              className="btn2"
+              className="btn2 justify-self-end"
               aria-label="Remove activity"
               onClick={() => update('fixed', form.fixed.filter((_, activityIndex) => activityIndex !== index))}
             >
