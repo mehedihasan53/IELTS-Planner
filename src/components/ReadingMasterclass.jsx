@@ -418,20 +418,6 @@ export default function ReadingMasterclass() {
 
   return (
     <section className="space-y-4 fade" lang="bn">
-      {/* <header className="card p-4 sm:p-6">
-        <div className="flex items-start gap-3">
-          <span className="logo shrink-0">
-            <Icon name="Reading" size={17} color="#fff" />
-          </span>
-          <div className="min-w-0">
-            <Badge>ULTIMATE READING MASTER HUB</Badge>
-            <h2 className="mt-2 text-xl sm:text-2xl font-extrabold leading-snug">
-              Ultimate IELTS Reading Masterclass Hub
-            </h2>
-            <p className="mt-1 text-sm mute">Prepared by Mehedi Hasan</p>
-          </div>
-        </div>
-      </header> */}
       <p className="text-sm mute px-1">Core ও Advanced মডিউল থেকে বিষয় নির্বাচন করুন, তারপর যে নোটটি পড়তে চান সেটি খুলুন। প্রতিটি section-এর strategy, নিয়ম ও সতর্কতাগুলো একসাথে সাজানো হয়েছে।</p>
       <nav className="grid grid-cols-2 gap-2" aria-label="Reading study modules">
         {[
