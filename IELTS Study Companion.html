@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IELTS Study Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#0f1222;--mute:#636a85;--line:#e3e6f0;--acc:#4f46e5;--soft:#eef0fb;--warn:#fff4d6;--bad:#dc2626;--grad:linear-gradient(90deg,#4f46e5,#0ea5e9);--shadow:0 1px 2px rgba(15,18,34,.05),0 8px 24px -12px rgba(15,18,34,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0b14;--card:#12142a;--ink:#eef0fb;--mute:#9aa2c2;--line:#262a4a;--acc:#8b93ff;--soft:#1b1f3d;--warn:#3a2f10;--bad:#f87171;--shadow:0 8px 24px -12px rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a0b14;--card:#12142a;--ink:#eef0fb;--mute:#9aa2c2;--line:#262a4a;--acc:#8b93ff;--soft:#1b1f3d;--warn:#3a2f10;--bad:#f87171;--shadow:0 8px 24px -12px rgba(0,0,0,.6);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;-webkit-font-smoothing:antialiased}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.mute{color:var(--mute)}.line{border-color:var(--line)}.scroll{overflow-x:auto}
+.hero{border-radius:18px;color:#fff;background:radial-gradient(120% 140% at 100% 0%,#0ea5e9 0%,transparent 55%),linear-gradient(135deg,#4338ca,#7c3aed);box-shadow:0 18px 40px -20px rgba(79,70,229,.7)}
+.logo{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4f46e5,#0ea5e9)}
+.btn{background:var(--ink);color:var(--bg);border-radius:10px;padding:.6rem 1.1rem;font-weight:600;font-size:.9rem}
+.btn:hover{opacity:.88}
+.btn2{border:1px solid var(--line);border-radius:10px;padding:.5rem .8rem;font-weight:500;font-size:.875rem;background:var(--card)}
+.btn2:hover:not(:disabled){background:var(--soft)}.btn2:disabled{opacity:.4}
+.inp{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.6rem .75rem;color:var(--ink);font-size:.95rem}
+.inp:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--soft);outline:none}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:2px;padding:3px;background:var(--soft);border-radius:10px}
+.seg button{padding:.4rem .85rem;border-radius:8px;font-size:.875rem;font-weight:500;color:var(--mute)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.nav{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;border-radius:9px;font-size:.9rem;font-weight:500;color:var(--mute)}
+.nav:hover{background:var(--soft)}.nav[data-on=true]{background:var(--soft);color:var(--ink);font-weight:600}
+.step{width:24px;height:24px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;border:1.5px solid var(--line);color:var(--mute)}
+.step[data-on=true]{background:var(--acc);border-color:var(--acc);color:var(--card)}
+.task{border:1px solid var(--line);border-radius:12px;background:var(--card);transition:background .15s,border-color .15s}
+.task:hover{border-color:var(--acc)}.task[data-on=true]{background:var(--soft)}
+.chk{width:22px;height:22px;border-radius:7px;border:2px solid;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.fade{animation:fade .28s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo}=React;
+const KEY='ielts-companion-v1';
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
+const store=s=>{try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}};
+const tm=s=>{const[a,b]=s.split(':');return +a*60+ +b};
+const fm=m=>{m=Math.round(m);const h=Math.floor(m/60)%24,mi=m%60;return ((h%12)||12)+':'+String(mi).padStart(2,'0')+(h>=12?' PM':' AM')};
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const dayDiff=(a,b)=>Math.round((new Date(b+'T00:00')-new Date(a+'T00:00'))/864e5);
+
+const P={
+ d:{Reading:'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z',
+ Listening:'M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3',
+ Writing:'M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z',
+ Speaking:'M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3',
+ Vocabulary:'M17 6.1H3 M21 12.1H3 M15.1 18H3',
+ Review:'M22 12h-4l-3 9L9 3l-3 9H2',
+ check:'M20 6 9 17l-5-5',dash:'M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z',
+ clock:'M12 6v6l4 2 M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
+ map:'M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z M9 3v15 M15 6v15',
+ set:'M4 21v-7 M4 10V3 M12 21v-9 M12 8V3 M20 21v-5 M20 12V3 M1 14h6 M9 8h6 M17 16h6',
+ target:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0 M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0 M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0',
+ plus:'M5 12h14 M12 5v14',x:'M18 6 6 18 M6 6l12 12',l:'m15 18-6-6 6-6',r:'m9 18 6-6-6-6'}};
+const Ic=({n,s=18,c})=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c||'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={P.d[n]}/></svg>;
+const C={Reading:'#2563eb',Listening:'#0d9488',Writing:'#7c3aed',Speaking:'#e11d48',Vocabulary:'#d97706',Review:'#64748b',fixed:'#475569',meal:'#94a3b8',prayer:'#16a34a',rest:'#94a3b8',free:'#cbd5e1'};
+const SK=['Reading','Listening','Writing','Speaking','Vocabulary'];
+
+const PRESETS={
+ Gym:[{name:'Gym',start:'09:30',dur:120}],
+ Work:[{name:'Work',start:'09:00',dur:480}],
+ Prayer:[['Fajr','05:30',20],['Zuhr','12:30',20],['Asr','16:30',15],['Maghrib','18:15',15],['Isha','20:30',20]].map(([name,start,dur])=>({name,start,dur,kind:'prayer'})),
+ Other:[{name:'Class / Other',start:'15:00',dur:60}]};
+const ESS=[{name:'Breakfast',start:'07:30',dur:30},{name:'Lunch & rest',start:'12:30',dur:45},{name:'Dinner',start:'20:30',dur:30}];
+
+const RM=`Diagnostic Passage|Section 1 Basics|Question Analysis & Task 2 Structure|Part 1 Intro Questions
+True / False / Not Given|Section 1 Practice|Paraphrasing & Introduction|Part 1 Topic Practice
+Matching Headings|Section 2 Practice|Thesis Statement & Body Paragraph 1|Cue Card Intro
+Sentence Completion|Section 2 Practice|Body Paragraph 2 Structure|Part 2 Practice
+Multiple Choice (MCQ)|Section 3 Practice|Conclusion Writing|Part 3 Discussion
+Matching Information|Section 4 Practice|Complete Essay Writing|Full Speaking Test
+Mini Reading Test|Mini Listening Test|Essay Review & Feedback|Speaking Review
+Matching Features|Section 1 Focused Test|Agree / Disagree Essay|Part 1 Practice
+Matching Headings|Section 2 Focused Test|Discuss Both Views Essay|Cue Card Practice
+True / False / Not Given|Section 3 Focused Test|Advantages & Disadvantages Essay|Part 3 Deep Dive
+MCQ Strategies|Section 4 Focused Test|Problem & Solution Essay|Part 2 Practice
+Sentence Completion|Full Section Practice|Two-part Question Essay|Part 1 Review
+Timed Passage (20 min)|Full Listening Test|Task 1: Line Graph & Bar Chart|Speaking Mock
+Full Reading Test|Full Listening Test|Task 1: Pie Chart & Tables|Full Review
+Passage 2 (timed 18–20 min)|Section 3 & 4 Drill|Task 1: Map & Process Diagram|Practice & Recording
+Weak Area Analysis|Full Test + Analysis|Task 2 Practice (timed 40 min)|Practice & Recording
+Full Reading Test (60 min)|Section Drill|Task 1 + Task 2 Practice|Full Speaking Mock
+Weak Question Focus|Full Listening Test|Task 2 Weak Type Practice|Vocabulary & Collocations
+Weak Question Focus|Section Drill|Task 1 Overview Practice|Topic Cards Practice
+Timed Passage|Section 3 & 4 Drill|Full Writing Test (60 min)|Error Notebook Evaluation
+FULL IELTS MOCK TEST|FULL IELTS MOCK TEST|Band Score Analysis|Light Revision & Rest
+Full Reading Test|Weak Area Practice|Task 2 Essay Writing|Speaking Practice
+Reading Weak Areas|Full Listening Test|Task 1 Report Writing|Vocabulary Revision
+Weak Question Practice|Section Drill|Full Writing Test (Task 1 + 2)|Part 3 Focus
+Timed Passage|Weak Area Practice|Task 2 Speed Writing|Grammar & Sentence Check
+Reading Mock|Listening Mock|Writing Self-Review|Speaking Mock
+FULL IELTS MOCK TEST|FULL IELTS MOCK TEST|Detailed Mistake Analysis|Weakness Correction
+FULL IELTS MOCK TEST|FULL IELTS MOCK TEST|Final Band Estimation|Formula & Template Review
+Revise Vocabulary & Spelling|Revise Weak Sections|Essay Templates Review|Cue Cards Revision
+FINAL MOCK TEST|FINAL MOCK TEST|Final Band Analysis|Final Review`.split('\n').map(x=>x.split('|'));
+const pIdx=(p,d)=>Math.min(29,Math.floor((d-1)*30/p.days));
+const phase=i=>i<7?'Foundation':i<14?'Skill building':i<21?'Intensive':'Exam prep';
+
+function build(p){
+ const fx=[];
+ p.fixed.forEach(f=>{const a=tm(f.start),dur=+f.dur||0;fx.push({a,b:a+dur,name:f.name,type:f.kind||'fixed'});
+  if(/gym|workout/i.test(f.name)&&dur>=45)fx.push({a:a+dur,b:a+dur+45,name:'Return, bath & recovery',type:'rest'})});
+ ESS.forEach(e=>{const a=tm(e.start),b=a+e.dur;if(!fx.some(x=>x.a<b&&x.b>a))fx.push({a,b,name:e.name,type:'meal'})});
+ fx.sort((x,y)=>x.a-y.a);
+ let free=[],cur=360;
+ fx.forEach(f=>{if(f.a>cur)free.push([cur,Math.min(f.a,1320)]);cur=Math.max(cur,f.b)});
+ if(cur<1320)free.push([cur,1320]);
+ free=free.filter(s=>s[1]-s[0]>=15);
+ const avail=free.reduce((s,x)=>s+x[1]-x[0],0);
+ const budget=Math.min(p.hours*60,avail);
+ const hi=p.target>=7,low=p.target<=6;
+ let w=hi?[.28,.2,.3,.1,.06,.06]:low?[.22,.22,.2,.12,.14,.1]:[.25,.2,.25,.12,.1,.08];
+ if(p.level==='Beginner')w=[w[0]-.03,w[1],w[2]-.03,w[3],w[4]+.06,w[5]];
+ const names=[...SK,'Review'],pref=[390,480,870,1230,1260,1290];
+ const S=names.map((k,i)=>({k,pref:pref[i],m:Math.max(15,Math.round(budget*w[i]/5)*5)}));
+ const st=[];let unplaced=0;
+ S.forEach(s=>{let m=s.m;while(m>=15){let best=null;
+  free.forEach((sl,i)=>{const len=sl[1]-sl[0];if(len<15)return;const ch=Math.min(m,len,s.k==='Writing'?90:75);
+   const a=Math.max(sl[0],Math.min(s.pref,sl[1]-ch));const cost=Math.abs(a-s.pref)+(ch<Math.min(m,75)?40:0);
+   if(!best||cost<best.cost)best={i,ch,a,cost}});
+  if(!best){unplaced+=m;break}
+  const sl=free[best.i];free.splice(best.i,1,[sl[0],best.a],[best.a+best.ch,sl[1]]);
+  free=free.filter(x=>x[1]-x[0]>=15);
+  st.push({a:best.a,b:best.a+best.ch,name:s.k,type:s.k});m-=best.ch}});
+ const mins={};st.forEach(b=>mins[b.type]=(mins[b.type]||0)+b.b-b.a);
+ const gaps=free.map(([a,b])=>({a,b,name:'Free time',type:'free'}));
+ const blocks=[...fx,...st,...gaps].sort((x,y)=>x.a-y.a);
+ return {blocks,mins,unplaced,studyTotal:Object.values(mins).reduce((a,b)=>a+b,0),avail};
+}
+
+function tasksFor(p,d,sc){
+ const [r,l,w,s]=RM[pIdx(p,d)];const hi=p.target>=7,low=p.target<=6||p.level==='Beginner';
+ const n=low?8:hi?15:10,m=sc.mins;
+ const times=k=>sc.blocks.filter(b=>b.type===k).map(b=>fm(b.a)+'–'+fm(b.b)).join(', ');
+ return [
+  {id:'r',k:'Reading',t:r,x:hi?'Strict timing: 20 min per passage.':low?'Go untimed first, then review every answer.':'Time yourself, then review errors.'},
+  {id:'l',k:'Listening',t:l,x:hi?'Single listen only, as in the real exam.':'Check spelling and plurals in answers.'},
+  {id:'w',k:'Writing',t:w,x:hi?'Aim for band 7 cohesion and precise vocabulary.':low?'Watch a model answer first, then write by hand.':'Write by hand, then self-correct.'},
+  {id:'s',k:'Speaking',t:s,x:'Record yourself and replay it.'},
+  {id:'v',k:'Vocabulary',t:`Learn ${n} new words`,x:'Use each in your own sentence.'},
+  {id:'e',k:'Review',t:'Update error notebook',x:'Revise yesterday’s mistakes before you finish.'}
+ ].map(t=>({...t,min:m[t.k]||0,when:times(t.k)}));
+}
+
+Object.assign(P.d,{
+ sun:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z M12 2v2 M12 20v2 M4.9 4.9l1.4 1.4 M17.7 17.7l1.4 1.4 M2 12h2 M20 12h2 M4.9 19.1l1.4-1.4 M17.7 6.3l1.4-1.4',
+ moon:'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z',rot:'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5',
+ arr:'M5 12h14 M12 5l7 7-7 7',back:'M19 12H5 M12 19l-7-7 7-7',flame:'M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z'});
+const STUDY=[...SK,'Review'];
+const hhmm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+
+function applyOv(sc,ov){
+ const cnt={};
+ let bl=sc.blocks.map(b=>{if(!STUDY.includes(b.type))return {...b};
+  const n=cnt[b.type]=(cnt[b.type]||0)+1,key=b.type+'#'+n,o=ov[key];
+  return o?{...b,key,a:o.a,b:o.a+o.dur,edited:true}:{...b,key}});
+ const real=x=>x.type!=='free',hit=(x,y)=>x!==y&&real(y)&&y.a<x.b&&y.b>x.a;
+ bl=bl.filter(b=>real(b)||!bl.some(x=>hit(b,x))).sort((x,y)=>x.a-y.a);
+ bl.forEach(b=>{b.clash=real(b)&&bl.some(x=>hit(b,x))});
+ const mins={};bl.forEach(b=>{if(STUDY.includes(b.type))mins[b.type]=(mins[b.type]||0)+b.b-b.a});
+ return {...sc,blocks:bl,mins,studyTotal:Object.values(mins).reduce((a,b)=>a+b,0)};
+}
+
+const Field=({t,children})=><label className="block"><span className="block text-[13px] font-medium mb-1.5 mute">{t}</span>{children}</label>;
+const Seg=({opts,val,on,fmt})=><div className="seg" role="group">{opts.map(o=><button type="button" key={o} className={val===o?'on':''} aria-pressed={val===o} onClick={()=>on(o)}>{fmt?fmt(o):o}</button>)}</div>;
+const Ring=({v,size=120,col='var(--acc)',track='var(--soft)',txt='var(--ink)'})=>{const r=size/2-9,c=2*Math.PI*r;
+ return <svg width={size} height={size} role="img" aria-label={Math.round(v)+'% complete'}>
+  <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={track} strokeWidth="9"/>
+  <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={col} strokeWidth="9" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c*(1-v/100)} transform={`rotate(-90 ${size/2} ${size/2})`} style={{transition:'stroke-dashoffset .5s'}}/>
+  <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fill={txt} style={{fontSize:size/4.2,fontWeight:700}}>{Math.round(v)}%</text></svg>};
+const Bar=({v,h=8})=><div style={{height:h,background:'var(--soft)',borderRadius:99}} role="progressbar" aria-valuenow={Math.round(v)} aria-valuemin="0" aria-valuemax="100"><div style={{width:v+'%',height:'100%',background:'var(--grad)',borderRadius:99,transition:'width .4s'}}/></div>;
+
+function Wizard({init,onDone,edit}){
+ const [f,setF]=useState(init),[step,setStep]=useState(1),[err,setErr]=useState('');
+ const up=(k,v)=>setF(o=>({...o,[k]:v}));
+ const upFx=(i,k,v)=>up('fixed',f.fixed.map((x,j)=>j===i?{...x,[k]:v}:x));
+ const add=k=>up('fixed',[...f.fixed,...PRESETS[k].map(x=>({...x}))]);
+ const norm=()=>({...f,name:f.name.trim(),days:+f.days,hours:+f.hours});
+ const next=()=>{
+  if(step===1){if(!f.name.trim())return setErr('Enter your name to continue.');
+   if(!(f.days>=1&&f.days<=365))return setErr('Days remaining must be between 1 and 365.');
+   if(!(f.hours>=1&&f.hours<=12))return setErr('Study hours must be between 1 and 12.')}
+  if(step===2&&f.fixed.some(x=>!x.start||!(+x.dur>0)))return setErr('Give every activity a start time and a duration in minutes.');
+  setErr('');setStep(step+1)};
+ const sc=useMemo(()=>step===3?build(norm()):null,[step]);
+ const labels=['Goals','Routine','Plan'];
+ return <div className="w-full max-w-2xl mx-auto">
+  <ol className="flex items-center gap-2 mb-5" aria-label="Setup steps">{labels.map((l,i)=><li key={l} className="flex items-center gap-2 flex-1">
+   <span className="step" data-on={step>=i+1}>{step>i+1?<Ic n="check" s={14}/>:i+1}</span>
+   <span className={'text-sm font-medium '+(step===i+1?'':'mute')}>{l}</span>
+   {i<2&&<span className="flex-1 h-px" style={{background:step>i+1?'var(--acc)':'var(--line)'}}/>}</li>)}</ol>
+  <div className="card p-5 sm:p-7 fade" key={step}>
+   {step===1&&<div className="space-y-5">
+    <div><h2 className="text-xl font-bold">What are you aiming for?</h2><p className="mute text-sm">This sets how your study time is split.</p></div>
+    <Field t="Your name"><input className="inp" autoFocus value={f.name} onChange={e=>up('name',e.target.value)} placeholder="e.g. Rashed" autoComplete="given-name"/></Field>
+    <Field t="Current level"><Seg opts={['Beginner','Intermediate','Advanced']} val={f.level} on={v=>up('level',v)}/></Field>
+    <Field t="Target band"><Seg opts={[6,6.5,7,7.5,8]} val={f.target} on={v=>up('target',v)} fmt={v=>v.toFixed(1)}/></Field>
+    <div className="grid grid-cols-2 gap-4">
+     <Field t="Days remaining"><input className="inp" type="number" min="1" max="365" value={f.days} onChange={e=>up('days',e.target.value)}/></Field>
+     <Field t="Study hours per day"><input className="inp" type="number" min="1" max="12" step="0.5" value={f.hours} onChange={e=>up('hours',e.target.value)}/></Field></div></div>}
+   {step===2&&<div className="space-y-4">
+    <div><h2 className="text-xl font-bold">Your fixed routine</h2><p className="mute text-sm">Gym, work and prayer times are removed from your study day. Gym adds 45 minutes of recovery.</p></div>
+    <div className="flex flex-wrap gap-2">{Object.keys(PRESETS).map(k=><button type="button" key={k} className="btn2 flex items-center gap-1.5" onClick={()=>add(k)}><Ic n="plus" s={14}/>{k}</button>)}</div>
+    <div className="space-y-2">{f.fixed.length===0&&<p className="text-sm mute">Nothing fixed yet. Add an activity above, or continue with a free day.</p>}
+     {f.fixed.map((x,i)=><div key={i} className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_8rem_6rem_auto] gap-2 items-center">
+      <input className="inp" aria-label="Activity name" value={x.name} onChange={e=>upFx(i,'name',e.target.value)}/>
+      <input className="inp" aria-label="Start time" type="time" value={x.start} onChange={e=>upFx(i,'start',e.target.value)}/>
+      <input className="inp" aria-label="Duration in minutes" type="number" min="5" step="5" value={x.dur} onChange={e=>upFx(i,'dur',e.target.value)}/>
+      <button type="button" className="btn2" aria-label="Remove activity" onClick={()=>up('fixed',f.fixed.filter((_,j)=>j!==i))}><Ic n="x" s={16}/></button></div>)}</div>
+    <p className="text-xs mute">Duration is in minutes.</p></div>}
+   {step===3&&<div className="space-y-4">
+    <div><h2 className="text-xl font-bold">Your generated plan</h2><p className="mute text-sm">{(sc.studyTotal/60).toFixed(1)} study hours a day, built around {f.fixed.length} fixed {f.fixed.length===1?'activity':'activities'}.</p></div>
+    {sc.unplaced>0&&<p className="p-3 rounded-lg text-sm font-medium" style={{background:'var(--warn)'}}>{Math.round(sc.unplaced)} minutes of study didn’t fit. Shorten an activity or reduce study hours.</p>}
+    <div className="space-y-2.5">{STUDY.map(k=><div key={k} className="flex items-center gap-3 text-sm"><span className="w-24 flex items-center gap-2 font-medium"><Ic n={k} s={15} c={C[k]}/>{k}</span><div className="flex-1"><Bar v={(sc.mins[k]||0)/Math.max(1,sc.studyTotal)*100*3} h={6}/></div><span className="w-14 text-right mute">{sc.mins[k]||0} min</span></div>)}</div>
+    <p className="text-sm mute">You can fine-tune every study slot later in Daily Routine.</p></div>}
+   {err&&<p role="alert" className="mt-4 text-sm font-medium" style={{color:'var(--bad)'}}>{err}</p>}
+   <div className="flex justify-between mt-6">
+    {step>1?<button type="button" className="btn2 flex items-center gap-1.5" onClick={()=>{setErr('');setStep(step-1)}}><Ic n="back" s={15}/>Back</button>:<span/>}
+    {step<3?<button type="button" className="btn flex items-center gap-1.5" onClick={next}>Continue<Ic n="arr" s={15}/></button>
+     :<button type="button" className="btn flex items-center gap-1.5" onClick={()=>onDone(norm())}>{edit?'Save changes':'Start studying'}<Ic n="arr" s={15}/></button>}
+   </div></div></div>;
+}
+
+function App(){
+ const [st,setSt]=useState(useMemo(load,[]));
+ const [tab,setTab]=useState('dash'),[sel,setSel]=useState(null),[flt,setFlt]=useState('All'),[ek,setEk]=useState(null);
+ useEffect(()=>{if(st)store(st)},[st]);
+ useEffect(()=>{const r=document.documentElement;if(st&&st.theme)r.dataset.theme=st.theme;else delete r.dataset.theme},[st&&st.theme]);
+ const base=useMemo(()=>st?build(st.p):null,[st&&st.p]);
+ const sc=useMemo(()=>base&&applyOv(base,st.ov||{}),[base,st&&st.ov]);
+ const dark=()=>st&&st.theme?st.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+ const flip=()=>setSt(o=>({...o,theme:dark()?'light':'dark'}));
+ const blank={name:'',level:'Intermediate',target:6.5,days:30,hours:6,fixed:[...PRESETS.Gym,...PRESETS.Prayer].map(x=>({...x}))};
+ if(!st)return <div className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center">
+  <div className="text-center mb-6 max-w-md"><h1 className="text-3xl font-extrabold tracking-tight">IELTS Study Companion</h1><p className="mute mt-1">Three quick steps to a timetable that fits your real day.</p></div>
+  <Wizard init={blank} onDone={p=>setSt({p,start:ymd(new Date()),done:{},ov:{}})}/></div>;
+ const {p,start,done}=st,ov=st.ov||{};
+ const elapsed=Math.max(0,dayDiff(start,ymd(new Date())));
+ const cur=Math.min(p.days,elapsed+1),left=Math.max(0,p.days-elapsed),d=sel||cur;
+ const all=tasksFor(p,d,sc),isDone=t=>!!done[d+'-'+t.id];
+ const dc=day=>['r','l','w','s','v','e'].filter(i=>done[day+'-'+i]).length;
+ const total=Object.keys(done).filter(k=>done[k]&&+k.split('-')[0]<=p.days).length;
+ const pct=total/(p.days*6)*100,dpct=dc(d)/6*100;
+ const nDone=all.filter(isDone).length;
+ const shown=all.filter(t=>flt==='All'||(flt==='Completed')===isDone(t));
+ const toggle=id=>setSt(o=>({...o,done:{...o.done,[d+'-'+id]:!o.done[d+'-'+id]}}));
+ const setOv=(key,a,dur)=>setSt(o=>({...o,ov:{...(o.ov||{}),[key]:{a:Math.max(0,Math.min(1430,a)),dur:Math.max(10,Math.min(180,dur))}}}));
+ const clrOv=key=>setSt(o=>{const n={...(o.ov||{})};delete n[key];return {...o,ov:n}});
+ const tabs=[['dash','Dashboard','dash'],['routine','Daily Routine','clock'],['road','Roadmap','map'],['set','Settings','set']];
+ return <div className="md:flex min-h-screen">
+  <aside className="md:w-60 md:shrink-0 md:h-screen md:sticky md:top-0 p-3 md:p-5 border-b md:border-b-0 md:border-r line" style={{background:'var(--card)'}}>
+   <div className="flex items-center justify-between md:mb-6">
+    <div className="flex items-center gap-2 font-bold"><span className="logo"><Ic n="target" s={16} c="#fff"/></span>IELTS Planner</div>
+    <button className="btn2 md:hidden" aria-label="Toggle theme" onClick={flip}><Ic n={dark()?'sun':'moon'} s={16}/></button></div>
+   <nav className="flex md:flex-col gap-1 mt-3 md:mt-0 overflow-x-auto" aria-label="Sections">{tabs.map(([k,t,i])=><button key={k} className="nav whitespace-nowrap" data-on={tab===k} aria-current={tab===k?'page':undefined} onClick={()=>setTab(k)}><Ic n={i} s={16}/>{t}</button>)}</nav>
+   <div className="hidden md:block mt-6 p-3 rounded-xl" style={{background:'var(--soft)'}}><div className="flex justify-between text-xs font-medium mb-2"><span>Overall</span><span>{Math.round(pct)}%</span></div><Bar v={pct} h={6}/></div>
+   <button className="btn2 hidden md:flex items-center gap-2 mt-3 w-full justify-center" onClick={flip}><Ic n={dark()?'sun':'moon'} s={15}/>{dark()?'Light mode':'Dark mode'}</button>
+  </aside>
+  <main className="flex-1 min-w-0 p-3 sm:p-6 lg:p-8 max-w-4xl pb-20">
+  {tab==='dash'&&<div className="space-y-4 fade">
+   <section className="hero p-5 sm:p-7 flex items-center justify-between gap-4">
+    <div className="min-w-0"><p className="text-sm opacity-80">Hi {p.name}</p>
+     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Day {d} of {p.days}{d===cur?'':' (not today)'}</h1>
+     <p className="text-sm opacity-90 mt-1">{phase(pIdx(p,d))} phase · {nDone} of 6 tasks done</p></div>
+    <Ring v={dpct} size={110} col="#fff" track="rgba(255,255,255,.25)" txt="#fff"/></section>
+   <div className="grid grid-cols-3 gap-3">
+    {[['Target band',p.target.toFixed(1),'target'],['Days left',left,'clock'],['Study / day',(sc.studyTotal/60).toFixed(1)+'h','flame']].map(([t,v,i])=><div key={t} className="card p-4"><div className="flex items-center gap-1.5 mute text-xs font-medium"><Ic n={i} s={14}/>{t}</div><div className="text-2xl sm:text-3xl font-bold mt-1">{v}</div></div>)}</div>
+   <section className="card p-4 sm:p-5">
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+     <div className="flex items-center gap-2"><button className="btn2" aria-label="Previous day" disabled={d<=1} onClick={()=>setSel(d-1)}><Ic n="l" s={16}/></button>
+      <button className="btn2" aria-label="Next day" disabled={d>=p.days} onClick={()=>setSel(d+1)}><Ic n="r" s={16}/></button>
+      {d!==cur&&<button className="btn2 text-sm" onClick={()=>setSel(null)}>Today</button>}</div>
+     <div className="seg" role="group" aria-label="Filter tasks">{['All','Pending','Completed'].map(o=><button key={o} className={flt===o?'on':''} aria-pressed={flt===o} onClick={()=>setFlt(o)}>{o} <span className="mute">{o==='All'?6:o==='Completed'?nDone:6-nDone}</span></button>)}</div></div>
+    <ul className="space-y-2">{shown.length===0&&<li className="text-center py-8 mute text-sm">{flt==='Completed'?'Nothing completed yet. Tick a task to see it here.':'All tasks done for this day. Nice work.'}</li>}
+     {shown.map(t=>{const on=isDone(t);return <li key={t.id}><button onClick={()=>toggle(t.id)} aria-pressed={on} className="task w-full text-left flex gap-3 items-start p-3.5" data-on={on}>
+      <span className="chk" style={{borderColor:C[t.k],background:on?C[t.k]:'transparent'}}>{on&&<Ic n="check" s={14} c="#fff"/>}</span>
+      <span className="flex-1 min-w-0">
+       <span className="flex items-center gap-2 text-sm font-semibold" style={{color:C[t.k]}}><Ic n={t.k} s={15}/>{t.k}{t.min>0&&<span className="mute font-normal">{t.min} min</span>}</span>
+       <span className={'block font-medium mt-0.5 '+(on?'line-through opacity-50':'')}>{t.t}</span>
+       <span className="block text-sm mute">{t.x}</span>
+       {t.when&&<span className="block text-xs mute mt-1">{t.when}</span>}</span></button></li>})}</ul>
+   </section></div>}
+
+  {tab==='routine'&&<section className="card p-4 sm:p-6 fade">
+   <h1 className="text-xl font-bold">Daily routine</h1>
+   <p className="mute text-sm mb-4">{(sc.studyTotal/60).toFixed(1)} hours of study. Select the pencil on any study slot to change its start time or length.</p>
+   {sc.unplaced>0&&<p className="mb-3 p-3 rounded-lg text-sm font-medium" style={{background:'var(--warn)'}}>{Math.round(sc.unplaced)} minutes of study didn’t fit around your fixed activities.</p>}
+   {sc.blocks.some(b=>b.clash)&&<p className="mb-3 p-3 rounded-lg text-sm font-medium" style={{background:'var(--warn)'}}>Some slots overlap. Move the highlighted ones to a free time.</p>}
+   <ul className="space-y-1.5">{sc.blocks.map(b=>{const s=STUDY.includes(b.type);return <li key={b.key||b.a+b.name}>
+    <div className="flex gap-3 items-stretch">
+     <div className="w-24 shrink-0 text-sm font-medium pt-2.5">{fm(b.a)}<span className="mute block font-normal text-xs">{b.b-b.a} min</span></div>
+     <div className="flex-1 rounded-lg px-3 py-2.5 flex items-center gap-2 text-sm font-medium" style={{borderLeft:'4px solid '+C[b.type],background:b.type==='free'?'transparent':'var(--soft)',outline:b.clash?'2px solid var(--bad)':'none',opacity:b.type==='free'?.6:1}}>
+      {s&&<Ic n={b.type} s={15} c={C[b.type]}/>}{b.name}{b.edited&&<span className="mute text-xs">edited</span>}
+      {s&&<button className="btn2 ml-auto" style={{padding:'.25rem .5rem'}} aria-label={'Edit '+b.name+' slot'} onClick={()=>setEk(ek===b.key?null:b.key)}><Ic n="Writing" s={14}/></button>}</div></div>
+    {s&&ek===b.key&&<div className="ml-24 pl-3 mt-1.5 flex flex-wrap items-end gap-3 fade">
+     <Field t="Start"><input className="inp" type="time" value={hhmm(b.a)} onChange={e=>e.target.value&&setOv(b.key,tm(e.target.value),b.b-b.a)}/></Field>
+     <Field t="Minutes"><input className="inp" style={{width:90}} type="number" min="10" max="180" step="5" value={b.b-b.a} onChange={e=>setOv(b.key,b.a,+e.target.value||10)}/></Field>
+     {b.edited&&<button className="btn2 flex items-center gap-1.5" onClick={()=>clrOv(b.key)}><Ic n="rot" s={14}/>Reset</button>}</div>}
+   </li>})}</ul></section>}
+
+  {tab==='road'&&<section className="card p-4 sm:p-6 fade">
+   <h1 className="text-xl font-bold">{p.days}-day roadmap</h1>
+   <p className="mute text-sm mb-4">Foundation, skill building, intensive practice, then exam prep. Select a day to open its checklist.</p>
+   <div className="scroll"><div className="space-y-2" style={{minWidth:560}}>
+    {Array.from({length:p.days},(_,i)=>{const day=i+1,r=RM[pIdx(p,day)],c=dc(day);return <button key={day} onClick={()=>{setSel(day);setTab('dash')}} className="task w-full text-left grid gap-3 items-center p-3" data-on={c===6} style={{gridTemplateColumns:'5rem 1fr 3rem',borderColor:day===cur?'var(--acc)':undefined}}>
+     <span><b>Day {day}</b><span className="block text-xs mute">{phase(pIdx(p,day))}</span></span>
+     <span className="grid grid-cols-2 gap-x-3 text-sm">{['Reading','Listening','Writing','Speaking'].map((k,j)=><span key={k} className="truncate"><b style={{color:C[k]}}>{k[0]}</b> {r[j]}</span>)}</span>
+     <span className="font-semibold text-right text-sm">{c}/6</span></button>})}</div></div></section>}
+
+  {tab==='set'&&<div className="space-y-4 fade">
+   <Wizard edit init={p} onDone={np=>{setSt(o=>({...o,p:np,ov:{}}));setSel(null);setEk(null);setTab('dash')}}/>
+   <div className="card p-4 flex flex-wrap gap-3 items-center justify-between max-w-2xl mx-auto">
+    <p className="text-sm mute">Clear all progress and start the setup again.</p>
+    <button className="btn2" onClick={()=>{if(confirm('Delete all progress and start over?')){try{localStorage.removeItem(KEY)}catch(e){}setSt(null);setSel(null);setTab('dash')}}}>Reset everything</button></div></div>}
+  </main></div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
