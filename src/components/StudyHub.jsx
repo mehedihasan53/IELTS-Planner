@@ -3,6 +3,8 @@ import Icon from './Icon.jsx';
 import PersonCueCards from './PersonCueCards.jsx';
 import PlaceCueCards from './PlaceCueCards.jsx';
 import TopicCueCards from './TopicCueCards.jsx';
+import SpeakingPartOne from './SpeakingPartOne.jsx';
+import SpeakingPartThree from './SpeakingPartThree.jsx';
 import ReadingMasterclass from './ReadingMasterclass.jsx';
 import { studyModules } from '../data/studyHubContent.js';
 import {
@@ -184,6 +186,18 @@ export default function StudyHub({ selectedModule, onSelectModule }) {
   }
 
   if (currentModule.id === 'speaking') {
+    if (speakingFolder === 'general') {
+      return (
+        <SpeakingPartOne onBack={() => setSpeakingFolder(null)} />
+      );
+    }
+
+    if (speakingFolder === 'follow-up') {
+      return (
+        <SpeakingPartThree onBack={() => setSpeakingFolder(null)} />
+      );
+    }
+
     if (speakingFolder === 'person') {
       return (
         <section className="space-y-4 fade">
@@ -232,26 +246,21 @@ export default function StudyHub({ selectedModule, onSelectModule }) {
           </header>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { id: 'general', title: '1. General Questions', subtitle: 'Build confident answers for familiar topics.', comingSoon: true },
+              { id: 'general', title: '1. General Questions', subtitle: 'Build confident answers for familiar topics.' },
               { id: 'cue-cards', title: '2. Cue Card Questions', subtitle: 'Practise Part 2 topics with strategies and sample answers.' },
-              { id: 'follow-up', title: '3. Follow-up Questions', subtitle: 'Develop ideas and support opinions in Part 3.', comingSoon: true },
+              { id: 'follow-up', title: '3. Follow-up Questions', subtitle: 'Develop ideas and support opinions in Part 3.' },
             ].map((part) => (
               <button
                 type="button"
                 key={part.id}
                 className="card w-full min-w-0 p-4 sm:p-5 text-left transition-transform enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={part.comingSoon}
                 onClick={() => setSpeakingFolder(part.id)}
               >
                 <span className="flex items-start justify-between gap-3">
                   <span className="logo shrink-0">
                     <Icon name="Speaking" size={16} color="#fff" />
                   </span>
-                  {part.comingSoon ? (
-                    <span className="rounded-full px-2.5 py-1 text-xs font-semibold mute" style={{ background: 'var(--soft)' }}>
-                      Coming soon
-                    </span>
-                  ) : <Icon name="arr" size={18} />}
+                  <Icon name="arr" size={18} />
                 </span>
                 <span className="block mt-4 text-base font-bold">{part.title}</span>
                 <span className="block mt-1 text-sm mute">{part.subtitle}</span>
