@@ -106,35 +106,9 @@ export const studyModules = [
   },
   {
     id: 'speaking',
-    title: 'Speaking Guidelines',
+    title: 'Speaking Masterclass',
     shortTitle: 'Speaking',
-    subtitle: 'Speak naturally, extend relevant answers, and organise longer turns.',
+    subtitle: 'Core rules, structure, and seven detailed person cue-card sample answers.',
     icon: 'Speaking',
-    overview: {
-      intro: 'The Speaking test is a face-to-face interview of about 11–14 minutes. It has three parts: familiar questions, a one-to-two-minute individual talk, and a deeper discussion. Assessment focuses on fluency and coherence, lexical resource, grammatical range and accuracy, and pronunciation.',
-      takeaways: [
-        { title: 'Communicate, don’t recite', text: 'Use natural language and answer the question directly before adding detail.' },
-        { title: 'Extend with purpose', text: 'Add a reason, example, contrast, or brief personal detail instead of repeating the same idea.' },
-        { title: 'Keep going calmly', text: 'If a word is missing, explain the idea another way; a minor hesitation does not require restarting.' },
-      ],
-    },
-    questionTypes: [
-      { title: 'Part 1: familiar topics', details: 'Short questions about everyday subjects such as home, study, work, routines, or interests.', tip: 'Give a direct answer, then one reason or example. A few complete sentences are usually enough.' },
-      { title: 'Part 2: cue card', details: 'Prepare for one minute, then speak for up to two minutes about a topic and its prompts.', tip: 'Make brief notes using keywords, and use the prompts as a route through your talk.' },
-      { title: 'Part 3: discussion', details: 'More abstract questions connected to the Part 2 topic, often about society, change, or the future.', tip: 'State a view, explain the reasoning, and support it with a general example or comparison.' },
-    ],
-    strategy: [
-      { title: 'Part 1: answer and extend', points: ['Answer the exact question first.', 'Add one reason, example, or contrast to make the answer complete.', 'Use a mix of simple and complex sentences, but do not force complexity.', 'If you do not have a personal experience, answer honestly and explain your perspective.'] },
-      { title: 'Part 2: one-minute planning', points: ['Write one keyword for each cue-card prompt.', 'Add a few supporting details: who, where, when, what happened, and why it mattered.', 'Use a simple timeline or story arc to keep the talk coherent.', 'If you finish early, add a reflection or explain what you learned.'] },
-      { title: 'Part 3: develop an argument', points: ['Give a clear general answer rather than only a personal anecdote.', 'Explain causes, effects, advantages, or differences as relevant.', 'Use cautious language when appropriate: “in many cases”, “it may depend on…”.', 'Compare past and present or different groups when it helps answer the question.'] },
-      { title: 'Pronunciation and vocabulary', points: ['Speak at a comfortable pace and group words into meaningful phrases.', 'Stress key words; do not try to remove your accent.', 'Choose precise, familiar words over memorised idioms.', 'Use linking phrases sparingly: “for example”, “as a result”, “on the other hand”.'] },
-    ],
-    vocabulary: ['I would say… mainly because…', 'One example that comes to mind is…', 'It depends on the situation, but…', 'Compared with the past…', 'A possible benefit / drawback is…'],
-    practice: {
-      prompt: 'Cue card: Describe a skill you would like to learn. Say what the skill is, when you became interested in it, how you would learn it, and why it matters to you.',
-      task: 'Take one minute to write keywords only. Speak for 1–2 minutes, then answer: “Why do some adults find it difficult to learn new skills?”',
-      answer: 'Self-check: Did you cover every cue point? Did you connect details in a clear order? For Part 3, did you give a general reason and explain it rather than answering with only “yes” or “no”?',
-      review: ['Record your answer and note one strength before choosing one improvement.', 'Listen for long pauses, repeated words, and unclear endings.', 'Try the cue card again using a different example rather than memorising a script.'],
-    },
   },
 ];

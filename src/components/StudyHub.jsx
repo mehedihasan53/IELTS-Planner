@@ -1,7 +1,29 @@
 import { useState } from 'react';
 import Icon from './Icon.jsx';
+import PersonCueCards from './PersonCueCards.jsx';
+import PlaceCueCards from './PlaceCueCards.jsx';
+import TopicCueCards from './TopicCueCards.jsx';
 import ReadingMasterclass from './ReadingMasterclass.jsx';
 import { studyModules } from '../data/studyHubContent.js';
+import {
+  activitiesCueCardContent,
+  eventsCueCardContent,
+  thingsCueCardContent,
+} from '../data/speakingAdditionalContent.js';
+
+const speakingFolders = [
+  { id: 'person', title: '1. Person Related Cue Cards', subtitle: 'Describe people who have influenced or inspired you.' },
+  { id: 'place', title: '2. Place Related Cue Cards', subtitle: 'Talk about places, their atmosphere and your experiences.' },
+  { id: 'things', title: '3. Things / Objects', subtitle: 'Cue cards about meaningful or useful objects.' },
+  { id: 'events', title: '4. Events / Experiences', subtitle: 'Cue cards about memorable occasions and experiences.' },
+  { id: 'activities', title: '5. Activities', subtitle: 'Cue cards about hobbies, skills and things you do.' },
+];
+
+const additionalCueCardContent = {
+  things: thingsCueCardContent,
+  events: eventsCueCardContent,
+  activities: activitiesCueCardContent,
+};
 
 const sectionLabels = [
   ['overview', 'Overview'],
@@ -128,6 +150,7 @@ function NotesSection({ section, module }) {
 
 export default function StudyHub({ selectedModule, onSelectModule }) {
   const [activeSection, setActiveSection] = useState('overview');
+  const [speakingFolder, setSpeakingFolder] = useState(null);
   const currentModule = studyModules.find((module) => module.id === selectedModule);
 
   if (!currentModule) {
@@ -147,6 +170,7 @@ export default function StudyHub({ selectedModule, onSelectModule }) {
               module={module}
               onClick={() => {
                 setActiveSection('overview');
+                setSpeakingFolder(null);
                 onSelectModule(module.id);
               }}
             />
@@ -159,6 +183,123 @@ export default function StudyHub({ selectedModule, onSelectModule }) {
     );
   }
 
+  if (currentModule.id === 'speaking') {
+    if (speakingFolder === 'person') {
+      return (
+        <section className="space-y-4 fade">
+          <PersonCueCards onBack={() => setSpeakingFolder(null)} />
+        </section>
+      );
+    }
+
+    if (speakingFolder === 'place') {
+      return (
+        <section className="space-y-4 fade">
+          <PlaceCueCards onBack={() => setSpeakingFolder(null)} />
+        </section>
+      );
+    }
+
+    if (additionalCueCardContent[speakingFolder]) {
+      return (
+        <section className="space-y-4 fade">
+          <TopicCueCards
+            content={additionalCueCardContent[speakingFolder]}
+            onBack={() => setSpeakingFolder(null)}
+          />
+        </section>
+      );
+    }
+
+    if (speakingFolder !== 'cue-cards') {
+      return (
+        <section className="space-y-4 fade">
+          <button
+            type="button"
+            className="btn2 inline-flex items-center gap-2"
+            onClick={() => {
+              setSpeakingFolder(null);
+              onSelectModule(null);
+            }}
+          >
+            <Icon name="back" size={15} />
+            All study modules
+          </button>
+          <header className="card p-4 sm:p-5">
+            <p className="text-sm font-semibold" style={{ color: 'var(--acc)' }}>IELTS PREPARATION</p>
+            <h1 className="mt-1 text-xl sm:text-2xl font-extrabold">Speaking Practice</h1>
+            <p className="mute text-sm mt-1">Choose a part of the Speaking test to practise.</p>
+          </header>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { id: 'general', title: '1. General Questions', subtitle: 'Build confident answers for familiar topics.', comingSoon: true },
+              { id: 'cue-cards', title: '2. Cue Card Questions', subtitle: 'Practise Part 2 topics with strategies and sample answers.' },
+              { id: 'follow-up', title: '3. Follow-up Questions', subtitle: 'Develop ideas and support opinions in Part 3.', comingSoon: true },
+            ].map((part) => (
+              <button
+                type="button"
+                key={part.id}
+                className="card w-full min-w-0 p-4 sm:p-5 text-left transition-transform enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={part.comingSoon}
+                onClick={() => setSpeakingFolder(part.id)}
+              >
+                <span className="flex items-start justify-between gap-3">
+                  <span className="logo shrink-0">
+                    <Icon name="Speaking" size={16} color="#fff" />
+                  </span>
+                  {part.comingSoon ? (
+                    <span className="rounded-full px-2.5 py-1 text-xs font-semibold mute" style={{ background: 'var(--soft)' }}>
+                      Coming soon
+                    </span>
+                  ) : <Icon name="arr" size={18} />}
+                </span>
+                <span className="block mt-4 text-base font-bold">{part.title}</span>
+                <span className="block mt-1 text-sm mute">{part.subtitle}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    return (
+      <section className="space-y-4 fade">
+        <button
+          type="button"
+          className="btn2 inline-flex items-center gap-2"
+          onClick={() => setSpeakingFolder(null)}
+        >
+          <Icon name="back" size={15} />
+          Speaking sections
+        </button>
+        <header className="card p-4 sm:p-5">
+          <p className="text-sm font-semibold" style={{ color: 'var(--acc)' }}>SPEAKING · PART 2</p>
+          <h1 className="mt-1 text-xl sm:text-2xl font-extrabold">Cue Card Questions</h1>
+          <p className="mute text-sm mt-1">Choose a cue-card folder for focused strategies and sample answers.</p>
+        </header>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {speakingFolders.map((folder) => (
+            <button
+              type="button"
+              key={folder.id}
+              className="card w-full min-w-0 p-4 sm:p-5 text-left transition-transform enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={() => setSpeakingFolder(folder.id)}
+            >
+              <span className="flex items-start justify-between gap-3">
+                <span className="logo shrink-0">
+                  <Icon name="Speaking" size={16} color="#fff" />
+                </span>
+                <Icon name="arr" size={18} />
+              </span>
+              <span className="block mt-4 text-base font-bold">{folder.title}</span>
+              <span className="block mt-1 text-sm mute">{folder.subtitle}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-4 fade">
       <button
@@ -166,6 +307,7 @@ export default function StudyHub({ selectedModule, onSelectModule }) {
         className="btn2 inline-flex items-center gap-2"
         onClick={() => {
           setActiveSection('overview');
+          setSpeakingFolder(null);
           onSelectModule(null);
         }}
       >
@@ -217,6 +359,7 @@ export default function StudyHub({ selectedModule, onSelectModule }) {
               className="btn2 min-w-0 flex items-center justify-center gap-1.5 text-xs sm:text-sm"
               onClick={() => {
                 setActiveSection('overview');
+                setSpeakingFolder(null);
                 onSelectModule(module.id);
               }}
             >

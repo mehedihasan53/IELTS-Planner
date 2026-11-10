@@ -67,7 +67,7 @@ export default function App() {
           />
         </div>
         <footer className="app-footer">
-          © 2026 Designed &amp; Developed by Mehedi Hasan Emon
+          © 2026 Designed &amp; Developed by Mehedi Hasan
         </footer>
       </div>
     );
@@ -187,7 +187,7 @@ export default function App() {
         </main>
       </div>
       <footer className="app-footer">
-        © 2026 Designed &amp; Developed by Mehedi Hasan Emon
+        © 2026 Designed &amp; Developed by Mehedi Hasan
       </footer>
     </div>
   );
